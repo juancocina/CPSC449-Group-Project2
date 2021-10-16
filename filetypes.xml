@@ -2,7 +2,7 @@
   <component name="FileTypeManager" version="18">
     <extensionMap>
       <mapping pattern="Procfile" type="AUTO_DETECTED" />
-      <mapping ext="csv" type="PLAIN_TEXT" />
+      <removed_mapping ext="csv" approved="true" type="PLAIN_TEXT" />
       <removed_mapping ext="ini" approved="true" type="PLAIN_TEXT" />
     </extensionMap>
   </component>
