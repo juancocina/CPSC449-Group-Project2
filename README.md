@@ -2,6 +2,7 @@
 
 # Members
 - Juan Cocina
+- Tilak ghorashainee
 
 # How to run
 download the repository
