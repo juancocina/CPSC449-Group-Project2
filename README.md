@@ -17,3 +17,9 @@ in the database
 to add a user to the database
 http POST localhost:8000/users/ username=test email=test@exampe.com password=testing bio=this%20is%20a%20test
 in the terminal
+spaces in a POST call must be entered as "%20"
+
+to search for a user
+http GET localhost:8000/search?username=*insert name here*
+in the terminal
+

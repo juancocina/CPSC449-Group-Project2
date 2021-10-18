@@ -36,6 +36,8 @@ def create_user(
         db: sqlite,
 ):
     users = db["users"]
+    # the following line replaces %20 with spaces for the database
+    # this may need to be done to other columns of the database, but for now, just bio
     bio = bio.replace("%20", " ")
     user = {
         "username": username,
