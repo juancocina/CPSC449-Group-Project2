@@ -28,7 +28,7 @@ def books(db: sqlite):
 @hug.post("/users/", status=hug.falcon.HTTP_201)
 def create_user(
         response,
-        id: hug.types.number,
+        # id: hug.types.number,
         username: hug.types.text,
         bio: hug.types.text,
         email: hug.types.text,
@@ -36,14 +36,12 @@ def create_user(
         db: sqlite,
 ):
     users = db["users"]
-
+    bio = bio.replace("%20", " ")
     user = {
-        "id": id,
         "username": username,
         "bio": bio,
         "email": email,
         "password": password,
-        "db": db,
     }
 
     try:
