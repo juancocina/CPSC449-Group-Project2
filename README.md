@@ -7,6 +7,7 @@
 # How to run
 download the repository
 once inside the folder on your machine run ./bin/.init.sh to create a database
+DO NOT, cd into bin to run init, the DB won't be made
 
 then hug -f users.api will start a local server
 localhost:8000

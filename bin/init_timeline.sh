@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sqlite-utils insert ./var/timeline.db timelines --csv ./share/timeline.csv --detect-types --pk=id
-sqlite-utils create-index ./var/timeline.db
+sqlite-utils insert ./var/timelines.db timelines --csv ./share/timelines.csv --detect-types --pk=id
+sqlite-utils create-index ./var/timelines.db id username text timestamp --unique

@@ -3,6 +3,7 @@ import configparser
 import logging.config
 import hug
 import sqlite_utils
+import datetime
 
 
 # Load configuration
@@ -16,3 +17,11 @@ def sqlite(section="sqlite", key="dbfile", **kwargs):
     dbfile = config[section][key]
     return sqlite_utils.Database(dbfile)
 
+@hug.directive()
+def log(name=__name__, **kwargs):
+    return logging.getLogger(name)
+
+# Route
+@hug.get("/timelines/")
+def timelines(db: sqlite):
+    return {"timelines": db["timelines"].rows}

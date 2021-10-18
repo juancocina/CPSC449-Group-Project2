@@ -1,4 +1,5 @@
-# Lines 1 - 22 will be borrowed from Professor Avery's hug/api
+# Lines 1 - 22 will be borrowed from Professor Avery's hug/api, the rest follow the example
+# in of that same api.py
 import configparser
 import logging.config
 import hug
