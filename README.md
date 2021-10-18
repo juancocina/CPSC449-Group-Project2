@@ -2,6 +2,7 @@
 
 # Members
 - Juan Cocina
+- Tilak ghorashainee
 
 # How to run
 download the repository
@@ -14,7 +15,3 @@ localhost:8000
 
 localhost:8000/users/ should show the base users
 in the database
-
-to add a user
-http POST localhost:8000/users/ username=test email=test@exampe.com password=testing bio=this%20is%20a%20test
-will add a user through the terminal
