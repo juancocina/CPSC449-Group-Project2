@@ -5,7 +5,6 @@ import logging.config
 import hug
 import sqlite_utils
 
-
 # Load Configuration
 config = configparser.ConfigParser()
 config.read("./etc/users.ini")
@@ -26,6 +25,7 @@ def log(name=__name__, **kwargs):
 def books(db: sqlite):
     return {"users": db["users"].rows}
 
+# Create a user
 @hug.post("/users/", status=hug.falcon.HTTP_201)
 def create_user(
         response,
@@ -57,16 +57,7 @@ def create_user(
     response.set_header("Location", f"/users/{user['id']}")
     return user
 
-@hug.get("/users/{id}")
-def retrieve_book(response, id: hug.types.number, db: sqlite):
-    users = []
-    try:
-        user = db["users"].get(id)
-        users.append(user)
-    except sqlite_utils.db.NotFoundError:
-        response.status = hug.falcon.HTTP_404
-    return {"users": user}
-
+# Search for a user
 @hug.get(
     "/search",
     example=[
@@ -95,3 +86,29 @@ def search(request, db: sqlite, logger: log):
             return {"users": users.rows_where(where, values)}
         else:
             return {"users": users.rows}
+
+# authenticate
+@hug.get("/authenticate/",
+         example=[
+             "username=user_name",
+             "password=password"
+         ],
+)
+def authenticateUser(request, db: sqlite, logger: log):
+    users = db["users"]
+
+    username = request.params.get("username")
+    password = request.params.get("password")
+
+    # the following code was modeled after
+    # https://stackabuse.com/a-sqlite-tutorial-with-python/
+    # specific section: "Querying the Database"
+    # and https://sqlite-utils.datasette.io/en/stable/python-api.html
+    #
+    for row in db.query('SELECT password FROM users WHERE username = ?', [username]):
+        if row['password'] == password:
+            print("lol")
+            return {"statusCode": 200,"message": "Successfully Authenticated!" }
+        else:
+            request.status = hug.falcon.HTTP_404
+        return {"error": str(request.status), "message": "Invalid Username or Password"}

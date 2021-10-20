@@ -21,6 +21,8 @@ def log(name=__name__, **kwargs):
     return logging.getLogger(name)
 
 # Route
+
+# Gets public timeline
 @hug.get("/timelines/")
 def timelines(db: sqlite):
     return {"timelines": db["timelines"].rows}
@@ -51,4 +53,44 @@ def postTweet(
 
     response.set_header("Location", f"/timelines/{tweet['id']}")
     return tweet
+
+# user timeline
+@hug.get("/timelimes/{id}")
+def getUserTimeline(response, id: hug.types.number, db:sqlite):
+    tweets = []
+    try:
+        tweet = db["timelines"].get(id)
+        tweets.append(tweet)
+    except sqlite_utils.db.NotFoundError:
+        response.status = hug.falcon.HTTP_404
+    return {"timelines": tweet}
+
+@hug.get(
+    "/search",
+    example=[
+        "username=user_name"
+        "text=text"
+    ],
+)
+def search(request, db: sqlite, logger:log):
+    tweets = db["timelines"]
+
+    conditions = []
+    values = []
+
+    if "published" in request.params:
+        conditions.append("username = ?")
+        values.append(request.params["username"])
+
+    for column in ["username", "text"]:
+        if column in request.params:
+            conditions.append(f"{column} LIKE ?")
+            values.append(f"%{request.params[column]}%")
+
+        if conditions:
+            where = " AND ".join(conditions)
+            logger.debug('WHERE "%s", %r', where, values)
+            return {"timelines": tweets.rows_where(where, values)}
+        else:
+            return {"timelines": tweets.rows}
 
