@@ -95,7 +95,6 @@ def search(request, db: sqlite, logger: log):
          ],
 )
 def authenticateUser(request, db: sqlite, logger: log):
-    users = db["users"]
 
     username = request.params.get("username")
     password = request.params.get("password")
@@ -112,3 +111,37 @@ def authenticateUser(request, db: sqlite, logger: log):
         else:
             request.status = hug.falcon.HTTP_404
         return {"error": str(request.status), "message": "Invalid Username or Password"}
+
+#
+# Access Followers
+#
+@hug.get("/followers/")
+def followers(db: sqlite):
+    return {"followers": db["followers"].rows}
+
+#
+# add follower
+#
+@hug.post("/followers/", status=hug.falcon.HTTP_201)
+def addFollower(
+        response,
+        follower_id: hug.types.number,
+        following_id: hug.types.number,
+        db: sqlite,
+):
+    followers = db["followers"]
+
+    follow = {
+        "follower_id": follower_id,
+        "following_id": following_id,
+    }
+
+    try:
+        followers.insert(follow)
+        follow["id"] = followers.last_pk
+    except Exception as e:
+        response.status = hug.falcon.HTTP_409
+        return {"error": str(e)}
+
+    response.set_header("Location", f"/users/{follow['id']}")
+    return follow
