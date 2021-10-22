@@ -1,6 +1,6 @@
 # CSPC449-Group-Project2
 
-# Members
+# Member (turned into a solo project)
 - Juan Cocina
 
 # How to run
