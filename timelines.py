@@ -4,6 +4,7 @@ import logging.config
 import hug
 import sqlite_utils
 from datetime import datetime
+import requests
 
 # Load configuration
 config = configparser.ConfigParser()
@@ -22,11 +23,33 @@ def log(name=__name__, **kwargs):
 
 # Route
 
+#
+# authentication
+# ... was not fully implemented before deadline ...
+@hug.get("/authentication/",
+         example=[
+             "username=user_name",
+             "password=password"
+         ],
+)
+def callAuthentication(request):
+    username = request.params.get("username")
+    password = request.params.get("password")
+
+    authenticated = requests.get(f'http://localhost:8001/authenticate/?username={username}&password={password}')
+    result = authenticated.json()
+    if result["statusCode"] == 200:
+        return result
+    else:
+        return False
+
+
 # Gets public timeline
 @hug.get("/timelines/")
 def timelines(db: sqlite):
-    return {"timelines": db["timelines"].rows}
+    return {"timelines": db["timelines"].rows_where(order_by="timestamp desc")}
 
+# Posts onto the timeline
 @hug.post("/timelines/", status=hug.falcon.HTTP_201)
 def postTweet(
         response,
@@ -55,24 +78,27 @@ def postTweet(
     return tweet
 
 # user timeline
+"""
 @hug.get("/timelimes/{id}")
-def getUserTimeline(response, id: hug.types.number, db:sqlite):
+def getUserTimeline(response, username: hug.types.text, db:sqlite):
     tweets = []
     try:
-        tweet = db["timelines"].get(id)
+        tweet = db["timelines"].get(username)
         tweets.append(tweet)
     except sqlite_utils.db.NotFoundError:
         response.status = hug.falcon.HTTP_404
     return {"timelines": tweet}
+"""
 
+# search for user tweets/posts/messages (userTimeline)
 @hug.get(
-    "/search",
+    "/timelines/",
     example=[
         "username=user_name"
         "text=text"
     ],
 )
-def search(request, db: sqlite, logger:log):
+def getUserTimeline(request, db: sqlite, logger:log):
     tweets = db["timelines"]
 
     conditions = []
@@ -92,5 +118,13 @@ def search(request, db: sqlite, logger:log):
             logger.debug('WHERE "%s", %r', where, values)
             return {"timelines": tweets.rows_where(where, values)}
         else:
-            return {"timelines": tweets.rows}
+            return {"timelines": tweets.rows_where(order_by="timestamp desc")}
 
+#
+# Home timeline (retrieves posts from users you follow)
+#
+
+
+#
+# Repost
+#

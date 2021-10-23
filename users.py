@@ -107,10 +107,9 @@ def authenticateUser(request, db: sqlite, logger: log):
     for row in db.query('SELECT password FROM users WHERE username = ?', [username]):
         if row['password'] == password:
             print("lol")
-            return {"statusCode": 200,"message": "Successfully Authenticated!" }
+            return {"statusCode": 200, "message": "Successfully Authenticated!"}
         else:
-            request.status = hug.falcon.HTTP_404
-        return {"error": str(request.status), "message": "Invalid Username or Password"}
+            return {"statusCode": 404, "message": "Error: Invalid Username or Password"}
 
 #
 # Access Followers
