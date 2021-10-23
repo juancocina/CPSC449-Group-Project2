@@ -1,8 +1,7 @@
 # CSPC449-Group-Project2
 
-# Members
+# Member (turned into a solo project)
 - Juan Cocina
-- Tilak ghorashainee
 
 # How to run
 download the repository
