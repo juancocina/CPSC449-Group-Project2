@@ -19,7 +19,6 @@
 - /share/user.csv
 - 
 - /var (folder will be empty)
-- .env
 - Procfile
 - README.md
 - 
